@@ -1,0 +1,36 @@
+/*----------------------------------
+  Button
+------------------------------------*/
+.button {
+  position: relative;
+  display: block;
+  padding: 30px;
+  font-size: 2rem;
+  font-weight: bold;
+  line-height: 1.2;
+  color: inherit;
+  text-align: center;
+  text-decoration: none;
+  background: $c_white;
+  border: 2px solid;
+  border-radius: 4px;
+  &::after {
+    position: absolute;
+    top: 0;
+    right: 15px;
+    bottom: 0;
+    display: block;
+    width: 0.5em;
+    height: 0.5em;
+    margin: auto;
+    content: "";
+    border-top: 2px solid;
+    border-right: 2px solid;
+    transform: rotate(45deg);
+  }
+}
+
+.button--email {
+  max-width: 400px;
+  margin: 0 auto;
+}
