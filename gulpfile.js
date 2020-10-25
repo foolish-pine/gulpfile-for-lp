@@ -1,4 +1,6 @@
 const gulp = require("gulp");
+const ejs = require("gulp-ejs");
+const rename = require("gulp-rename");
 const prettify = require("gulp-prettify");
 const sass = require("gulp-sass");
 const plumber = require("gulp-plumber");
@@ -18,14 +20,20 @@ const imageminJpegtran = require("imagemin-jpegtran");
 const pngquant = require("imagemin-pngquant");
 const del = require("del");
 const browserSync = require("browser-sync");
+const FtpDeploy = require("ftp-deploy");
+const ftpDeploy = new FtpDeploy();
+const fs = require("fs");
 const { series } = require("gulp");
 
 sass.compiler = require("node-sass");
+const ftpOption = JSON.parse(fs.readFileSync("ftp-option.json", "utf8"));
 
 function htmlTranspile() {
   return gulp
-    .src(["dist/*.html"])
+    .src(["src/ejs/**/*.ejs", "!" + "src/ejs/**/_*.ejs"])
     .pipe(plumber({ errorHandler: notify.onError("<%= error.message %>") }))
+    .pipe(ejs())
+    .pipe(rename({ extname: ".html" }))
     .pipe(
       prettify({
         indent_size: 2,
@@ -166,13 +174,26 @@ function server(done) {
   done();
 }
 
+function ftpUpload(done) {
+  ftpDeploy.deploy(ftpOption).then(() => {
+    console.log("deploy finished!!");
+  })
+  .catch(err => console.log(err));
+  ftpDeploy.on("uploading", (data) => {
+    console.log("転送済みファイルの数: ", `${data.transferredFileCount} / ${data.totalFilesCount}`)
+    console.log("ファイル名: ", data.filename)
+  })
+  done();
+}
+
 function watch(done) {
-  gulp.watch("src/**.html", htmlTranspile);
+  gulp.watch("src/ejs/**/*", htmlTranspile);
   gulp.watch("src/scss/**/*", series(scssStylelint, cssTranspile));
   gulp.watch("src/js/**/*", series(jsEslint, jsTranspile));
   gulp.watch("src/img/**/*", imageMinify);
   done();
 }
 
-exports.default = gulp.series(scssStylelintInit, cssTranspile, jsEslintInit, jsTranspile, watch, server);
+exports.default = gulp.series(htmlTranspile, scssStylelintInit, cssTranspile, jsEslintInit, jsTranspile, watch, server);
 exports.imagemin = gulp.series(cleanImage, imageMinify);
+exports.upload = ftpUpload;

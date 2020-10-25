@@ -204,7 +204,6 @@ html {
   overflow-y: auto;
   font-size: 62.5%;
   -webkit-text-size-adjust: 100%;
-     -moz-text-size-adjust: 100%;
           text-size-adjust: 100%;
   scroll-behavior: smooth;
 }
@@ -233,7 +232,6 @@ button {
 button {
   cursor: pointer;
   -webkit-appearance: none;
-     -moz-appearance: none;
           appearance: none;
 }
 
@@ -756,8 +754,7 @@ iframe {
   width: 100%;
   max-width: none;
   height: 375px;
-  -o-object-fit: cover;
-     object-fit: cover;
+  object-fit: cover;
 }
 
 .mv__inner {

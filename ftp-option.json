@@ -1,0 +1,10 @@
+{
+  "user": "",
+  "password": "",
+  "host": "",
+  "localRoot": "/Users/",
+  "remoteRoot":"/",
+  "include": ["*"],
+  "exclude": ["style.css.map", "main.js.map"],
+  "deleteRemote": false
+}
